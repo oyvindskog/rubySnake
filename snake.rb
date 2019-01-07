@@ -23,6 +23,14 @@ class Vector2D
 		@y = vector.y
 	end
 	
+	def equals(vector)
+		if (vector)
+			(@x == vector.x) && (@y == vector.y)
+		else 
+			false
+		end
+	end
+	
 end
 
 class Snake
@@ -65,18 +73,27 @@ class Snake
 	end
 	
 	def handleCollisions(foodpos, window)
+		
+		#Collision with wall?
 		setStartingPosition if @bodyparts.first.x < 0 || 
 		   @bodyparts.first.y  < 0 ||
 		   @bodyparts.first.x * 10 > 630 ||
 		   @bodyparts.first.y * 10 > 480    
-		
-		
-		#puts collidesWithFood(foodpos)
+		   
+		#Collision with food?
 		if collidesWithFood(foodpos)
 			5.times do  
 				@bodyparts.push(Vector2D.new(-1,-1)) 
 			end
 			window.setFoodPos()
+		end
+		
+		#Collision with self?
+		length = @bodyparts.size
+		(1..length-1).each do |i|
+			if (@bodyparts.first.equals(@bodyparts[i]))
+				setStartingPosition
+			end
 		end
 		
 	end
@@ -121,6 +138,7 @@ class MyWindow < Gosu::Window
 	def draw
 		draw_background
 		@snake.draw
+		sleep(0.02)
 	end
 	
 	def update
